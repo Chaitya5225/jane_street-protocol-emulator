@@ -8,12 +8,10 @@ You can also include images in this folder and reference them in the markdown. E
 -->
 
 ## How it works
-
-Explain how your project works
+A small programmable core that reads and drives pins with cycle-exact timing. Protocols such as UART, SPI and I2C are implemented as programs, not fixed circuits. (Work in progress.)
 
 ## How to test
-
-Explain how to use your project
+Run the cocotb tests in the test folder. (Work in progress.)
 
 ## External hardware
 
