@@ -1,0 +1,18 @@
+; UART TX  --  8 ticks per bit, LSB first
+; TX   = uo[0]  (pin 0)
+; data = ui[7:0] (pins 0-7), host strobe = pin 10 (uio[2])
+; Frame: start + 8 data + stop = 80 ticks.  .div sets the tick divider.
+
+.div 54                    ; 50 MHz / 54 = 925.9 kHz tick -> 115740 baud at 8 ticks/bit
+
+init:  set pins, 1         ; TX idle high
+start: wait 0 pin 10       ; host pulls strobe low...
+       wait 1 pin 10       ; ...rising edge = data byte valid on ui[7:0]
+       in   pins, 8        ; ISR <- ui[7:0]
+       mov  osr, isr
+       set  x, 7
+       set  pins, 0 [7]    ; start bit: 1 + 7 = 8 ticks
+bit:   out  pins, 1        ; next data bit: 1 tick
+       jmp  x--, bit [6]   ; + 7 = 8 ticks per data bit
+       set  pins, 1 [7]    ; stop bit: 8 ticks
+       jmp  start
